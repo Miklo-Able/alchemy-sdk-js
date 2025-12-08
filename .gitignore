@@ -7,7 +7,7 @@ yarn-error.log
 yarn-debug.log
 
 # Build files
-dist
+# dist - included in this branch for direct GitHub install
 
 # api-extractor temp files
 temp
