@@ -3,7 +3,7 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var utils = require('./api/utils');
-var index = require('./index-ec52404c.js');
+var index = require('./index-ee7c1b6b.js');
 var bignumber = require('@ethersproject/bignumber');
 require('@ethersproject/bytes');
 require('axios');
