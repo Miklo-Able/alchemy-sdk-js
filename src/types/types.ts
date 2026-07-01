@@ -224,7 +224,9 @@ export enum Network {
   HYPERLIQUID_MAINNET = 'hyperliquid-mainnet',
   HYPERLIQUID_TESTNET = 'hyperliquid-testnet',
   PLASMA_MAINNET = 'plasma-mainnet',
-  PLASMA_TESTNET = 'plasma-testnet'
+  PLASMA_TESTNET = 'plasma-testnet',
+  ROBINHOOD_MAINNET = 'robinhood-mainnet',
+  ROBINHOOD_TESTNET = 'robinhood-testnet'
 }
 
 /** Token Types for the `getTokenBalances()` endpoint. */

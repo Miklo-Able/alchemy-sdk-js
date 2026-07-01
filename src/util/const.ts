@@ -8,20 +8,97 @@ export const DEFAULT_MAX_RETRIES = 5;
 export const DEFAULT_REQUEST_TIMEOUT = 0; // 0 = no timeout
 
 /**
- * Returns the base URL for making Alchemy API requests. The `alchemy.com`
- * endpoints only work with non eth json-rpc requests.
+ * QuickNode network subdomain mapping
+ * Maps SDK Network to QuickNode subdomain (null = no subdomain, like ETH mainnet)
+ */
+const QUICKNODE_NETWORK_MAP: Partial<Record<Network, { subdomain: string | null; httpSuffix?: string; wsSuffix?: string }>> = {
+  [Network.ETH_MAINNET]: { subdomain: null },
+  [Network.BASE_MAINNET]: { subdomain: 'base-mainnet' },
+  [Network.BNB_MAINNET]: { subdomain: 'bsc' },
+  [Network.AVAX_MAINNET]: { subdomain: 'avalanche-mainnet', httpSuffix: '/ext/bc/C/rpc/', wsSuffix: '/ext/bc/C/ws/' },
+  [Network.ARB_MAINNET]: { subdomain: 'arbitrum-mainnet' },
+  [Network.MONAD_MAINNET]: { subdomain: 'monad-mainnet' },
+};
+
+/**
+ * Get QuickNode configuration from environment
+ * Expects: QUICKNODE_SLUG and QUICKNODE_API_KEY
+ */
+function getQuickNodeConfig(): { slug: string; apiKey: string } | null {
+  if (typeof process !== 'undefined' && process.env) {
+    const slug = process.env.QUICKNODE_SLUG;
+    const apiKey = process.env.QUICKNODE_API_KEY;
+    if (slug && apiKey) {
+      return { slug, apiKey };
+    }
+  }
+  return null;
+}
+
+/**
+ * Build QuickNode HTTP URL for a network
+ */
+function buildQuickNodeHttpUrl(network: Network): string | null {
+  const mapping = QUICKNODE_NETWORK_MAP[network];
+  if (!mapping) return null;
+
+  const config = getQuickNodeConfig();
+  if (!config) return null;
+
+  const { slug, apiKey } = config;
+  const suffix = mapping.httpSuffix || '';
+
+  if (mapping.subdomain === null) {
+    // ETH mainnet - no subdomain
+    return `https://${slug}.quiknode.pro/${apiKey}${suffix}`;
+  }
+  return `https://${slug}.${mapping.subdomain}.quiknode.pro/${apiKey}${suffix}`;
+}
+
+/**
+ * Build QuickNode WebSocket URL for a network
+ */
+function buildQuickNodeWsUrl(network: Network): string | null {
+  const mapping = QUICKNODE_NETWORK_MAP[network];
+  if (!mapping) return null;
+
+  const config = getQuickNodeConfig();
+  if (!config) return null;
+
+  const { slug, apiKey } = config;
+  const suffix = mapping.wsSuffix || '';
+
+  if (mapping.subdomain === null) {
+    // ETH mainnet - no subdomain
+    return `wss://${slug}.quiknode.pro/${apiKey}${suffix}`;
+  }
+  return `wss://${slug}.${mapping.subdomain}.quiknode.pro/${apiKey}${suffix}`;
+}
+
+/**
+ * Returns the base URL for making API requests.
+ * Uses QuickNode for supported networks if configured, falls back to Alchemy.
  *
  * @internal
  */
 export function getAlchemyHttpUrl(network: Network, apiKey: string): string {
+  const quickNodeUrl = buildQuickNodeHttpUrl(network);
+  if (quickNodeUrl) {
+    return quickNodeUrl;
+  }
   return `https://${network}.g.alchemy.com/v2/${apiKey}`;
 }
 
 export function getAlchemyNftHttpUrl(network: Network, apiKey: string): string {
+  // NFT API is Alchemy-specific
   return `https://${network}.g.alchemy.com/nft/v3/${apiKey}`;
 }
 
 export function getAlchemyWsUrl(network: Network, apiKey: string): string {
+  const quickNodeUrl = buildQuickNodeWsUrl(network);
+  if (quickNodeUrl) {
+    return quickNodeUrl;
+  }
   return `wss://${network}.g.alchemy.com/v2/${apiKey}`;
 }
 
@@ -163,7 +240,9 @@ export const EthersNetwork = {
   [Network.HYPERLIQUID_MAINNET]: 'hyperliquid-mainnet',
   [Network.HYPERLIQUID_TESTNET]: 'hyperliquid-testnet',
   [Network.PLASMA_MAINNET]: 'plasma-mainnet',
-  [Network.PLASMA_TESTNET]: 'plasma-testnet'
+  [Network.PLASMA_TESTNET]: 'plasma-testnet',
+  [Network.ROBINHOOD_MAINNET]: 'robinhood-mainnet',
+  [Network.ROBINHOOD_TESTNET]: 'robinhood-testnet'
 };
 
 /**
@@ -595,6 +674,14 @@ export const CustomNetworks: { [key: string]: NetworkFromEthers } = {
   'plasma-testnet': {
     chainId: 0x2612,
     name: 'plasma-testnet'
+  },
+  'robinhood-mainnet': {
+    chainId: 4663,
+    name: 'robinhood-mainnet'
+  },
+  'robinhood-testnet': {
+    chainId: 46630,
+    name: 'robinhood-testnet'
   }
 };
 

@@ -1,0 +1,24 @@
+# Mac OS
+.DS_Store
+
+# Yarn
+node_modules
+yarn-error.log
+yarn-debug.log
+
+# Build files
+# dist - included in this branch for direct GitHub install
+
+# api-extractor temp files
+temp
+
+# Alchemy keys and tokens
+alchemy.env
+
+.npmrc
+
+# VSCode History Extension
+.history
+
+# IDEs
+.idea

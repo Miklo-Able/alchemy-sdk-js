@@ -135,6 +135,8 @@ export declare const EthersNetwork: {
     "hyperliquid-testnet": string;
     "plasma-mainnet": string;
     "plasma-testnet": string;
+    "robinhood-mainnet": string;
+    "robinhood-testnet": string;
 };
 /**
  * Mapping of network names to their corresponding Ethers Network objects. These
