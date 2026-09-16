@@ -149,6 +149,8 @@ exports.Network = void 0;
     Network["PLASMA_TESTNET"] = "plasma-testnet";
     Network["ROBINHOOD_MAINNET"] = "robinhood-mainnet";
     Network["ROBINHOOD_TESTNET"] = "robinhood-testnet";
+    Network["ARC_MAINNET"] = "arc-mainnet";
+    Network["ARC_TESTNET"] = "arc-testnet";
 })(exports.Network || (exports.Network = {}));
 /** Token Types for the `getTokenBalances()` endpoint. */
 exports.TokenBalanceType = void 0;
@@ -781,7 +783,9 @@ const EthersNetwork = {
     [exports.Network.PLASMA_MAINNET]: 'plasma-mainnet',
     [exports.Network.PLASMA_TESTNET]: 'plasma-testnet',
     [exports.Network.ROBINHOOD_MAINNET]: 'robinhood-mainnet',
-    [exports.Network.ROBINHOOD_TESTNET]: 'robinhood-testnet'
+    [exports.Network.ROBINHOOD_TESTNET]: 'robinhood-testnet',
+    [exports.Network.ARC_MAINNET]: 'arc-mainnet',
+    [exports.Network.ARC_TESTNET]: 'arc-testnet'
 };
 /**
  * Mapping of network names to their corresponding Ethers Network objects. These
@@ -1220,6 +1224,14 @@ const CustomNetworks = {
     'robinhood-testnet': {
         chainId: 46630,
         name: 'robinhood-testnet'
+    },
+    'arc-mainnet': {
+        chainId: 5042,
+        name: 'arc-mainnet'
+    },
+    'arc-testnet': {
+        chainId: 5042002,
+        name: 'arc-testnet'
     }
 };
 function noop() {
@@ -1289,7 +1301,7 @@ class AlchemyConfig {
     getProvider() {
         if (!this._baseAlchemyProvider) {
             this._baseAlchemyProvider = (() => __awaiter$1(this, void 0, void 0, function* () {
-                const { AlchemyProvider } = yield Promise.resolve().then(function () { return require('./alchemy-provider-31b4f0bc.js'); });
+                const { AlchemyProvider } = yield Promise.resolve().then(function () { return require('./alchemy-provider-82c44b7f.js'); });
                 return new AlchemyProvider(this);
             }))();
         }
@@ -1310,7 +1322,7 @@ class AlchemyConfig {
     getWebSocketProvider() {
         if (!this._baseAlchemyWssProvider) {
             this._baseAlchemyWssProvider = (() => __awaiter$1(this, void 0, void 0, function* () {
-                const { AlchemyWebSocketProvider } = yield Promise.resolve().then(function () { return require('./alchemy-websocket-provider-86b76290.js'); });
+                const { AlchemyWebSocketProvider } = yield Promise.resolve().then(function () { return require('./alchemy-websocket-provider-e609da80.js'); });
                 return new AlchemyWebSocketProvider(this);
             }))();
         }
@@ -5361,4 +5373,4 @@ exports.noop = noop;
 exports.setLogLevel = setLogLevel;
 exports.toHex = toHex;
 exports.verifyAlchemyEventName = verifyAlchemyEventName;
-//# sourceMappingURL=index-96db2ff9.js.map
+//# sourceMappingURL=index-6dcf007e.js.map

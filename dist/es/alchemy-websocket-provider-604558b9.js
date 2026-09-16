@@ -1,9 +1,9 @@
-import { _ as __awaiter, f as fromHex, t as toHex, n as noop, C as CustomNetworks, i as isAlchemyEvent, v as verifyAlchemyEventName, c as EthersEvent, e as getAlchemyEventTag, D as DEFAULT_ALCHEMY_API_KEY, A as ALCHEMY_EVENT_TYPES, h as ALCHEMY_PENDING_TRANSACTIONS_EVENT_TYPE, j as AlchemySubscription, k as ALCHEMY_MINED_TRANSACTIONS_EVENT_TYPE, V as VERSION, E as EthersNetwork } from './index-5e38bb8c.js';
+import { _ as __awaiter, f as fromHex, t as toHex, n as noop, C as CustomNetworks, i as isAlchemyEvent, v as verifyAlchemyEventName, c as EthersEvent, e as getAlchemyEventTag, D as DEFAULT_ALCHEMY_API_KEY, A as ALCHEMY_EVENT_TYPES, h as ALCHEMY_PENDING_TRANSACTIONS_EVENT_TYPE, j as AlchemySubscription, k as ALCHEMY_MINED_TRANSACTIONS_EVENT_TYPE, V as VERSION, E as EthersNetwork } from './index-bc99390d.js';
 import SturdyWebSocket from 'sturdy-websocket';
 import { BigNumber } from '@ethersproject/bignumber';
 import { getNetwork } from '@ethersproject/networks';
 import { WebSocketProvider } from '@ethersproject/providers';
-import { AlchemyProvider } from './alchemy-provider-cba0ff37.js';
+import { AlchemyProvider } from './alchemy-provider-6b66edf1.js';
 import './api/utils';
 import '@ethersproject/bytes';
 import 'axios';
@@ -1146,4 +1146,4 @@ function addToPastEventsBuffer(pastEvents, event, getBlockNumber) {
 }
 
 export { AlchemyWebSocketProvider };
-//# sourceMappingURL=alchemy-websocket-provider-fb7425e2.js.map
+//# sourceMappingURL=alchemy-websocket-provider-604558b9.js.map

@@ -242,7 +242,9 @@ export const EthersNetwork = {
   [Network.PLASMA_MAINNET]: 'plasma-mainnet',
   [Network.PLASMA_TESTNET]: 'plasma-testnet',
   [Network.ROBINHOOD_MAINNET]: 'robinhood-mainnet',
-  [Network.ROBINHOOD_TESTNET]: 'robinhood-testnet'
+  [Network.ROBINHOOD_TESTNET]: 'robinhood-testnet',
+  [Network.ARC_MAINNET]: 'arc-mainnet',
+  [Network.ARC_TESTNET]: 'arc-testnet'
 };
 
 /**
@@ -682,6 +684,14 @@ export const CustomNetworks: { [key: string]: NetworkFromEthers } = {
   'robinhood-testnet': {
     chainId: 46630,
     name: 'robinhood-testnet'
+  },
+  'arc-mainnet': {
+    chainId: 5042,
+    name: 'arc-mainnet'
+  },
+  'arc-testnet': {
+    chainId: 5042002,
+    name: 'arc-testnet'
   }
 };
 

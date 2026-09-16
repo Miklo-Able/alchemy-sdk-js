@@ -143,6 +143,8 @@ var Network;
     Network["PLASMA_TESTNET"] = "plasma-testnet";
     Network["ROBINHOOD_MAINNET"] = "robinhood-mainnet";
     Network["ROBINHOOD_TESTNET"] = "robinhood-testnet";
+    Network["ARC_MAINNET"] = "arc-mainnet";
+    Network["ARC_TESTNET"] = "arc-testnet";
 })(Network || (Network = {}));
 /** Token Types for the `getTokenBalances()` endpoint. */
 var TokenBalanceType;
@@ -775,7 +777,9 @@ const EthersNetwork = {
     [Network.PLASMA_MAINNET]: 'plasma-mainnet',
     [Network.PLASMA_TESTNET]: 'plasma-testnet',
     [Network.ROBINHOOD_MAINNET]: 'robinhood-mainnet',
-    [Network.ROBINHOOD_TESTNET]: 'robinhood-testnet'
+    [Network.ROBINHOOD_TESTNET]: 'robinhood-testnet',
+    [Network.ARC_MAINNET]: 'arc-mainnet',
+    [Network.ARC_TESTNET]: 'arc-testnet'
 };
 /**
  * Mapping of network names to their corresponding Ethers Network objects. These
@@ -1214,6 +1218,14 @@ const CustomNetworks = {
     'robinhood-testnet': {
         chainId: 46630,
         name: 'robinhood-testnet'
+    },
+    'arc-mainnet': {
+        chainId: 5042,
+        name: 'arc-mainnet'
+    },
+    'arc-testnet': {
+        chainId: 5042002,
+        name: 'arc-testnet'
     }
 };
 function noop() {
@@ -1283,7 +1295,7 @@ class AlchemyConfig {
     getProvider() {
         if (!this._baseAlchemyProvider) {
             this._baseAlchemyProvider = (() => __awaiter$1(this, void 0, void 0, function* () {
-                const { AlchemyProvider } = yield import('./alchemy-provider-cba0ff37.js');
+                const { AlchemyProvider } = yield import('./alchemy-provider-6b66edf1.js');
                 return new AlchemyProvider(this);
             }))();
         }
@@ -1304,7 +1316,7 @@ class AlchemyConfig {
     getWebSocketProvider() {
         if (!this._baseAlchemyWssProvider) {
             this._baseAlchemyWssProvider = (() => __awaiter$1(this, void 0, void 0, function* () {
-                const { AlchemyWebSocketProvider } = yield import('./alchemy-websocket-provider-fb7425e2.js');
+                const { AlchemyWebSocketProvider } = yield import('./alchemy-websocket-provider-604558b9.js');
                 return new AlchemyWebSocketProvider(this);
             }))();
         }
@@ -5329,4 +5341,4 @@ class ContractFactory extends ContractFactory$1 {
 }
 
 export { ALCHEMY_EVENT_TYPES as A, WebhookVersion as B, CustomNetworks as C, DEFAULT_ALCHEMY_API_KEY as D, EthersNetwork as E, WebhookType as F, GetTransfersForOwnerTransferType as G, CommitmentLevel as H, IS_BROWSER as I, DebugTracerType as J, NftTokenType as K, NftSpamClassification as L, NftFilters as M, Network as N, OpenSeaSafelistRequestStatus as O, NftOrdering as P, NftSaleMarketplace as Q, NftSaleTakerType as R, SortingOrder as S, TokenBalanceType as T, NftRefreshState as U, VERSION as V, Wallet as W, NftCollectionMarketplace as X, HistoricalPriceInterval as Y, __awaiter$1 as _, DEFAULT_NETWORK as a, getAlchemyWsUrl as b, EthersEvent as c, deepCopy as d, getAlchemyEventTag as e, fromHex as f, getAlchemyHttpUrl as g, ALCHEMY_PENDING_TRANSACTIONS_EVENT_TYPE as h, isAlchemyEvent as i, AlchemySubscription as j, ALCHEMY_MINED_TRANSACTIONS_EVENT_TYPE as k, logWarn as l, Alchemy as m, noop as n, Contract as o, ContractFactory as p, isHex as q, AssetTransfersCategory as r, setLogLevel as s, toHex as t, SimulateAssetType as u, verifyAlchemyEventName as v, SimulateChangeType as w, DecodingAuthority as x, DebugCallType as y, GasOptimizedTransactionStatus as z };
-//# sourceMappingURL=index-5e38bb8c.js.map
+//# sourceMappingURL=index-bc99390d.js.map

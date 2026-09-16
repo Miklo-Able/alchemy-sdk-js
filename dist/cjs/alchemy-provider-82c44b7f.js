@@ -1,6 +1,6 @@
 'use strict';
 
-var index = require('./index-96db2ff9.js');
+var index = require('./index-6dcf007e.js');
 var networks = require('@ethersproject/networks');
 var providers = require('@ethersproject/providers');
 var web = require('@ethersproject/web');
@@ -368,4 +368,4 @@ function getResult(payload) {
 }
 
 exports.AlchemyProvider = AlchemyProvider;
-//# sourceMappingURL=alchemy-provider-31b4f0bc.js.map
+//# sourceMappingURL=alchemy-provider-82c44b7f.js.map

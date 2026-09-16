@@ -200,7 +200,9 @@ export declare enum Network {
     PLASMA_MAINNET = "plasma-mainnet",
     PLASMA_TESTNET = "plasma-testnet",
     ROBINHOOD_MAINNET = "robinhood-mainnet",
-    ROBINHOOD_TESTNET = "robinhood-testnet"
+    ROBINHOOD_TESTNET = "robinhood-testnet",
+    ARC_MAINNET = "arc-mainnet",
+    ARC_TESTNET = "arc-testnet"
 }
 /** Token Types for the `getTokenBalances()` endpoint. */
 export declare enum TokenBalanceType {

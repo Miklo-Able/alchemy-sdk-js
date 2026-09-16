@@ -137,6 +137,8 @@ export declare const EthersNetwork: {
     "plasma-testnet": string;
     "robinhood-mainnet": string;
     "robinhood-testnet": string;
+    "arc-mainnet": string;
+    "arc-testnet": string;
 };
 /**
  * Mapping of network names to their corresponding Ethers Network objects. These

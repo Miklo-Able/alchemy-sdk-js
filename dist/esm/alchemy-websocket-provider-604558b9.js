@@ -1,22 +1,16 @@
-'use strict';
-
-var index = require('./index-96db2ff9.js');
-var SturdyWebSocket = require('sturdy-websocket');
-var bignumber = require('@ethersproject/bignumber');
-var networks = require('@ethersproject/networks');
-var providers = require('@ethersproject/providers');
-var alchemyProvider = require('./alchemy-provider-31b4f0bc.js');
-require('./api/utils');
-require('@ethersproject/bytes');
-require('axios');
-require('@ethersproject/abstract-provider');
-require('@ethersproject/wallet');
-require('@ethersproject/contracts');
-require('@ethersproject/web');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var SturdyWebSocket__default = /*#__PURE__*/_interopDefaultLegacy(SturdyWebSocket);
+import { _ as __awaiter, f as fromHex, t as toHex, n as noop, C as CustomNetworks, i as isAlchemyEvent, v as verifyAlchemyEventName, c as EthersEvent, e as getAlchemyEventTag, D as DEFAULT_ALCHEMY_API_KEY, A as ALCHEMY_EVENT_TYPES, h as ALCHEMY_PENDING_TRANSACTIONS_EVENT_TYPE, j as AlchemySubscription, k as ALCHEMY_MINED_TRANSACTIONS_EVENT_TYPE, V as VERSION, E as EthersNetwork } from './index-bc99390d.js';
+import SturdyWebSocket from 'sturdy-websocket';
+import { BigNumber } from '@ethersproject/bignumber';
+import { getNetwork } from '@ethersproject/networks';
+import { WebSocketProvider } from '@ethersproject/providers';
+import { AlchemyProvider } from './alchemy-provider-6b66edf1.js';
+import './api/utils';
+import '@ethersproject/bytes';
+import 'axios';
+import '@ethersproject/abstract-provider';
+import '@ethersproject/wallet';
+import '@ethersproject/contracts';
+import '@ethersproject/web';
 
 /**
  * The maximum number of blocks to backfill. If more than this many blocks have
@@ -50,7 +44,7 @@ class WebsocketBackfiller {
      * @returns A list of `newHeads` events that were sent since the last backfill.
      */
     getNewHeadsBackfill(isCancelled, previousHeads, fromBlockNumber) {
-        return index.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             throwIfCancelled(isCancelled);
             const toBlockNumber = yield this.getBlockNumber();
             throwIfCancelled(isCancelled);
@@ -62,7 +56,7 @@ class WebsocketBackfiller {
             // If the last emitted event is too far back in the past, there's no need
             // to backfill for reorgs. Just fetch the last `maxBackfillBlocks` worth of
             // new heads.
-            const lastSeenBlockNumber = index.fromHex(previousHeads[previousHeads.length - 1].number);
+            const lastSeenBlockNumber = fromHex(previousHeads[previousHeads.length - 1].number);
             const minBlockNumber = toBlockNumber - this.maxBackfillBlocks + 1;
             if (lastSeenBlockNumber <= minBlockNumber) {
                 return this.getHeadEventsInRange(minBlockNumber, toBlockNumber + 1);
@@ -85,7 +79,7 @@ class WebsocketBackfiller {
      * @param fromBlockNumber The block number to start backfilling from.
      */
     getLogsBackfill(isCancelled, filter, previousLogs, fromBlockNumber) {
-        return index.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             throwIfCancelled(isCancelled);
             const toBlockNumber = yield this.getBlockNumber();
             throwIfCancelled(isCancelled);
@@ -97,7 +91,7 @@ class WebsocketBackfiller {
             // If the last emitted log is too far back in the past, there's no need
             // to backfill for removed logs. Just fetch the last `maxBackfillBlocks`
             // worth of logs.
-            const lastSeenBlockNumber = index.fromHex(previousLogs[previousLogs.length - 1].blockNumber);
+            const lastSeenBlockNumber = fromHex(previousLogs[previousLogs.length - 1].blockNumber);
             const minBlockNumber = toBlockNumber - this.maxBackfillBlocks + 1;
             if (lastSeenBlockNumber < minBlockNumber) {
                 return this.getLogsInRange(filter, minBlockNumber, toBlockNumber + 1);
@@ -109,18 +103,18 @@ class WebsocketBackfiller {
             // All previous logs with a block number greater than the common ancestor
             // were part of a re-org, so mark them as such.
             const removedLogs = previousLogs
-                .filter(log => index.fromHex(log.blockNumber) > commonAncestor.blockNumber)
+                .filter(log => fromHex(log.blockNumber) > commonAncestor.blockNumber)
                 .map(log => (Object.assign(Object.assign({}, log), { removed: true })));
             // If no common ancestor was found, start backfill from the oldest log's
             // block number.
             const fromBlockInclusive = commonAncestor.blockNumber === Number.NEGATIVE_INFINITY
-                ? index.fromHex(previousLogs[0].blockNumber)
+                ? fromHex(previousLogs[0].blockNumber)
                 : commonAncestor.blockNumber;
             let addedLogs = yield this.getLogsInRange(filter, fromBlockInclusive, toBlockNumber + 1);
             // De-dupe any logs that were already emitted.
             addedLogs = addedLogs.filter(log => log &&
-                (index.fromHex(log.blockNumber) > commonAncestor.blockNumber ||
-                    index.fromHex(log.logIndex) > commonAncestor.logIndex));
+                (fromHex(log.blockNumber) > commonAncestor.blockNumber ||
+                    fromHex(log.logIndex) > commonAncestor.logIndex));
             throwIfCancelled(isCancelled);
             return [...removedLogs, ...addedLogs];
         });
@@ -139,9 +133,9 @@ class WebsocketBackfiller {
      * @private
      */
     getBlockNumber() {
-        return index.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             const blockNumberHex = yield this.provider.send('eth_blockNumber');
-            return index.fromHex(blockNumberHex);
+            return fromHex(blockNumberHex);
         });
     }
     /**
@@ -152,7 +146,7 @@ class WebsocketBackfiller {
      * @private
      */
     getHeadEventsInRange(fromBlockInclusive, toBlockExclusive) {
-        return index.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             if (fromBlockInclusive >= toBlockExclusive) {
                 return [];
             }
@@ -160,7 +154,7 @@ class WebsocketBackfiller {
             for (let i = fromBlockInclusive; i < toBlockExclusive; i++) {
                 batchParts.push({
                     method: 'eth_getBlockByNumber',
-                    params: [index.toHex(i), false]
+                    params: [toHex(i), false]
                 });
             }
             // TODO: handle errors
@@ -174,13 +168,13 @@ class WebsocketBackfiller {
      * @private
      */
     getReorgHeads(isCancelled, previousHeads) {
-        return index.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             const result = [];
             // Iterate from the most recent head backwards in order to find the first
             // block that was part of a re-org.
             for (let i = previousHeads.length - 1; i >= 0; i--) {
                 const oldEvent = previousHeads[i];
-                const blockHead = yield this.getBlockByNumber(index.fromHex(oldEvent.number));
+                const blockHead = yield this.getBlockByNumber(fromHex(oldEvent.number));
                 throwIfCancelled(isCancelled);
                 // If the hashes match, then current head in the iteration was not re-orged.
                 if (oldEvent.hash === blockHead.hash) {
@@ -198,9 +192,9 @@ class WebsocketBackfiller {
      * @private
      */
     getBlockByNumber(blockNumber) {
-        return index.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             return this.provider.send('eth_getBlockByNumber', [
-                index.toHex(blockNumber),
+                toHex(blockNumber),
                 false
             ]);
         });
@@ -216,24 +210,24 @@ class WebsocketBackfiller {
      * @private
      */
     getCommonAncestor(isCancelled, previousLogs) {
-        return index.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             // Iterate from the most recent head backwards in order to find the first
             // block that was part of a re-org.
-            let blockHead = yield this.getBlockByNumber(index.fromHex(previousLogs[previousLogs.length - 1].blockNumber));
+            let blockHead = yield this.getBlockByNumber(fromHex(previousLogs[previousLogs.length - 1].blockNumber));
             throwIfCancelled(isCancelled);
             for (let i = previousLogs.length - 1; i >= 0; i--) {
                 const oldLog = previousLogs[i];
                 // Ensure that updated blocks are fetched every time the log's block number
                 // changes.
                 if (oldLog.blockNumber !== blockHead.number) {
-                    blockHead = yield this.getBlockByNumber(index.fromHex(oldLog.blockNumber));
+                    blockHead = yield this.getBlockByNumber(fromHex(oldLog.blockNumber));
                 }
                 // Since logs are ordered in ascending order, the first log that matches
                 // the hash should be the largest logIndex.
                 if (oldLog.blockHash === blockHead.hash) {
                     return {
-                        blockNumber: index.fromHex(oldLog.blockNumber),
-                        logIndex: index.fromHex(oldLog.logIndex)
+                        blockNumber: fromHex(oldLog.blockNumber),
+                        logIndex: fromHex(oldLog.logIndex)
                     };
                 }
             }
@@ -249,11 +243,11 @@ class WebsocketBackfiller {
      *
      * @private
      */ getLogsInRange(filter, fromBlockInclusive, toBlockExclusive) {
-        return index.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             if (fromBlockInclusive >= toBlockExclusive) {
                 return [];
             }
-            const rangeFilter = Object.assign(Object.assign({}, filter), { fromBlock: index.toHex(fromBlockInclusive), toBlock: index.toHex(toBlockExclusive - 1) });
+            const rangeFilter = Object.assign(Object.assign({}, filter), { fromBlock: toHex(fromBlockInclusive), toBlock: toHex(toBlockExclusive - 1) });
             return this.provider.send('eth_getLogs', [rangeFilter]);
         });
     }
@@ -313,24 +307,24 @@ const RETAINED_EVENT_BLOCK_COUNT = 10;
  *
  * @public
  */
-class AlchemyWebSocketProvider extends providers.WebSocketProvider {
+class AlchemyWebSocketProvider extends WebSocketProvider {
     /** @internal */
     constructor(config, wsConstructor) {
         var _a;
         // Normalize the API Key to a string.
-        const apiKey = alchemyProvider.AlchemyProvider.getApiKey(config.apiKey);
+        const apiKey = AlchemyProvider.getApiKey(config.apiKey);
         // Generate our own connection info with the correct endpoint URLs.
-        const alchemyNetwork = alchemyProvider.AlchemyProvider.getAlchemyNetwork(config.network);
-        const connection = alchemyProvider.AlchemyProvider.getAlchemyConnectionInfo(alchemyNetwork, apiKey, 'wss');
-        const protocol = `alchemy-sdk-${index.VERSION}`;
+        const alchemyNetwork = AlchemyProvider.getAlchemyNetwork(config.network);
+        const connection = AlchemyProvider.getAlchemyConnectionInfo(alchemyNetwork, apiKey, 'wss');
+        const protocol = `alchemy-sdk-${VERSION}`;
         // Use the provided config URL override if it exists, otherwise use the created one.
-        const ws = new SturdyWebSocket__default["default"]((_a = config.url) !== null && _a !== void 0 ? _a : connection.url, protocol, {
+        const ws = new SturdyWebSocket((_a = config.url) !== null && _a !== void 0 ? _a : connection.url, protocol, {
             wsConstructor: wsConstructor !== null && wsConstructor !== void 0 ? wsConstructor : getWebsocketConstructor()
         });
         // Normalize the Alchemy named network input to the network names used by
         // ethers. This allows the parent super constructor in JsonRpcProvider to
         // correctly set the network.
-        const ethersNetwork = index.EthersNetwork[alchemyNetwork];
+        const ethersNetwork = EthersNetwork[alchemyNetwork];
         super(ws, ethersNetwork !== null && ethersNetwork !== void 0 ? ethersNetwork : undefined);
         this._events = [];
         // In the case of a WebSocket reconnection, all subscriptions are lost and we
@@ -427,7 +421,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
             const { cancel, isCancelled } = makeCancelToken();
             this.cancelBackfill = cancel;
             for (const subscription of this.virtualSubscriptionsById.values()) {
-                void (() => index.__awaiter(this, void 0, void 0, function* () {
+                void (() => __awaiter(this, void 0, void 0, function* () {
                     try {
                         yield this.resubscribeAndBackfill(isCancelled, subscription);
                     }
@@ -461,7 +455,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
         this.backfiller = new WebsocketBackfiller(this);
         this.addSocketListeners();
         this.startHeartbeat();
-        this.cancelBackfill = index.noop;
+        this.cancelBackfill = noop;
     }
     /**
      * Overrides the `BaseProvider.getNetwork` method as implemented by ethers.js.
@@ -473,11 +467,11 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
      * @override
      */
     static getNetwork(network) {
-        if (typeof network === 'string' && network in index.CustomNetworks) {
-            return index.CustomNetworks[network];
+        if (typeof network === 'string' && network in CustomNetworks) {
+            return CustomNetworks[network];
         }
         // Call the standard ethers.js getNetwork method for other networks.
-        return networks.getNetwork(network);
+        return getNetwork(network);
     }
     /**
      * Overridden implementation of ethers that includes Alchemy based subscriptions.
@@ -515,7 +509,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
      * @public
      */
     off(eventName, listener) {
-        if (index.isAlchemyEvent(eventName)) {
+        if (isAlchemyEvent(eventName)) {
             return this._off(eventName, listener);
         }
         else {
@@ -531,7 +525,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
      * @public
      */
     removeAllListeners(eventName) {
-        if (eventName !== undefined && index.isAlchemyEvent(eventName)) {
+        if (eventName !== undefined && isAlchemyEvent(eventName)) {
             return this._removeAllListeners(eventName);
         }
         else {
@@ -547,7 +541,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
      * @override
      */
     listenerCount(eventName) {
-        if (eventName !== undefined && index.isAlchemyEvent(eventName)) {
+        if (eventName !== undefined && isAlchemyEvent(eventName)) {
             return this._listenerCount(eventName);
         }
         else {
@@ -563,7 +557,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
      * @override
      */
     listeners(eventName) {
-        if (eventName !== undefined && index.isAlchemyEvent(eventName)) {
+        if (eventName !== undefined && isAlchemyEvent(eventName)) {
             return this._listeners(eventName);
         }
         else {
@@ -578,9 +572,9 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
      * @override
      */
     _addEventListener(eventName, listener, once) {
-        if (index.isAlchemyEvent(eventName)) {
-            index.verifyAlchemyEventName(eventName);
-            const event = new index.EthersEvent(index.getAlchemyEventTag(eventName), listener, once);
+        if (isAlchemyEvent(eventName)) {
+            verifyAlchemyEventName(eventName);
+            const event = new EthersEvent(getAlchemyEventTag(eventName), listener, once);
             this._events.push(event);
             this._startEvent(event);
             return this;
@@ -599,7 +593,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
      */
     _startEvent(event) {
         // Check if the event type is a custom Alchemy subscription.
-        const customLogicTypes = [...index.ALCHEMY_EVENT_TYPES, 'block', 'filter'];
+        const customLogicTypes = [...ALCHEMY_EVENT_TYPES, 'block', 'filter'];
         if (customLogicTypes.includes(event.type)) {
             this.customStartEvent(event);
         }
@@ -616,7 +610,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
      * @override
      */
     _subscribe(tag, param, processFunc, event) {
-        return index.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             let subIdPromise = this._subIds[tag];
             // BEGIN MODIFIED CODE
             const startingBlockNumber = yield this.getBlockNumber();
@@ -660,11 +654,11 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
      * @override
      */
     emit(eventName, ...args) {
-        if (index.isAlchemyEvent(eventName)) {
+        if (isAlchemyEvent(eventName)) {
             let result = false;
             const stopped = [];
             // This line is the only modified line from the original method.
-            const eventTag = index.getAlchemyEventTag(eventName);
+            const eventTag = getAlchemyEventTag(eventName);
             this._events = this._events.filter(event => {
                 if (event.tag !== eventTag) {
                     return true;
@@ -690,7 +684,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
     }
     /** @internal */
     sendBatch(parts) {
-        return index.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             let nextId = 0;
             const payload = parts.map(({ method, params }) => {
                 return {
@@ -716,7 +710,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
      * @override
      */
     isCommunityResource() {
-        return this.apiKey === index.DEFAULT_ALCHEMY_API_KEY;
+        return this.apiKey === DEFAULT_ALCHEMY_API_KEY;
     }
     /**
      * DO NOT MODIFY.
@@ -732,9 +726,9 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
     _stopEvent(event) {
         let tag = event.tag;
         // START MODIFIED CODE
-        if (index.ALCHEMY_EVENT_TYPES.includes(event.type)) {
+        if (ALCHEMY_EVENT_TYPES.includes(event.type)) {
             // There are remaining pending transaction listeners.
-            if (this._events.filter(e => index.ALCHEMY_EVENT_TYPES.includes(e.type)).length) {
+            if (this._events.filter(e => ALCHEMY_EVENT_TYPES.includes(e.type)).length) {
                 return;
             }
             // END MODIFIED CODE
@@ -783,7 +777,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
      * @internal
      */
     resubscribeAndBackfill(isCancelled, subscription) {
-        return index.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             const { virtualId, method, params, sentEvents, backfillBuffer, startingBlockNumber } = subscription;
             subscription.isBackfilling = true;
             backfillBuffer.length = 0;
@@ -870,7 +864,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
         if (this.heartbeatIntervalId != null) {
             return;
         }
-        this.heartbeatIntervalId = setInterval(() => index.__awaiter(this, void 0, void 0, function* () {
+        this.heartbeatIntervalId = setInterval(() => __awaiter(this, void 0, void 0, function* () {
             try {
                 yield withTimeout(this.send('net_version'), HEARTBEAT_WAIT_TIME);
             }
@@ -890,23 +884,23 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
     // TODO(cleanup): Refactor and remove usages of `sendBatch()`.
     // TODO(errors): Use allSettled() once we have more error handling.
     sendBatchConcurrently(payload) {
-        return index.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             return Promise.all(payload.map(req => this.send(req.method, req.params)));
         });
     }
     /** @internal */
     customStartEvent(event) {
-        if (event.type === index.ALCHEMY_PENDING_TRANSACTIONS_EVENT_TYPE) {
+        if (event.type === ALCHEMY_PENDING_TRANSACTIONS_EVENT_TYPE) {
             const { fromAddress, toAddress, hashesOnly } = event;
             void this._subscribe(event.tag, [
-                index.AlchemySubscription.PENDING_TRANSACTIONS,
+                AlchemySubscription.PENDING_TRANSACTIONS,
                 { fromAddress, toAddress, hashesOnly }
             ], this.emitProcessFn(event), event);
         }
-        else if (event.type === index.ALCHEMY_MINED_TRANSACTIONS_EVENT_TYPE) {
+        else if (event.type === ALCHEMY_MINED_TRANSACTIONS_EVENT_TYPE) {
             const { addresses, includeRemoved, hashesOnly } = event;
             void this._subscribe(event.tag, [
-                index.AlchemySubscription.MINED_TRANSACTIONS,
+                AlchemySubscription.MINED_TRANSACTIONS,
                 { addresses, includeRemoved, hashesOnly }
             ], this.emitProcessFn(event), event);
         }
@@ -920,23 +914,23 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
     /** @internal */
     emitProcessFn(event) {
         switch (event.type) {
-            case index.ALCHEMY_PENDING_TRANSACTIONS_EVENT_TYPE:
+            case ALCHEMY_PENDING_TRANSACTIONS_EVENT_TYPE:
                 return result => this.emit({
-                    method: index.AlchemySubscription.PENDING_TRANSACTIONS,
+                    method: AlchemySubscription.PENDING_TRANSACTIONS,
                     fromAddress: event.fromAddress,
                     toAddress: event.toAddress,
                     hashesOnly: event.hashesOnly
                 }, result);
-            case index.ALCHEMY_MINED_TRANSACTIONS_EVENT_TYPE:
+            case ALCHEMY_MINED_TRANSACTIONS_EVENT_TYPE:
                 return result => this.emit({
-                    method: index.AlchemySubscription.MINED_TRANSACTIONS,
+                    method: AlchemySubscription.MINED_TRANSACTIONS,
                     addresses: event.addresses,
                     includeRemoved: event.includeRemoved,
                     hashesOnly: event.hashesOnly
                 }, result);
             case 'block':
                 return result => {
-                    const blockNumber = bignumber.BigNumber.from(result.number).toNumber();
+                    const blockNumber = BigNumber.from(result.number).toNumber();
                     this._emitted.block = blockNumber;
                     this.emit('block', blockNumber);
                 };
@@ -969,7 +963,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
         }
         const stopped = [];
         let found = false;
-        const eventTag = index.getAlchemyEventTag(eventName);
+        const eventTag = getAlchemyEventTag(eventName);
         this._events = this._events.filter(event => {
             if (event.tag !== eventTag || event.listener != listener) {
                 return true;
@@ -1005,7 +999,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
             this._events = [];
         }
         else {
-            const eventTag = index.getAlchemyEventTag(eventName);
+            const eventTag = getAlchemyEventTag(eventName);
             this._events = this._events.filter(event => {
                 if (event.tag !== eventTag) {
                     return true;
@@ -1035,7 +1029,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
         if (!eventName) {
             return this._events.length;
         }
-        const eventTag = index.getAlchemyEventTag(eventName);
+        const eventTag = getAlchemyEventTag(eventName);
         return this._events.filter(event => {
             return event.tag === eventTag;
         }).length;
@@ -1056,7 +1050,7 @@ class AlchemyWebSocketProvider extends providers.WebSocketProvider {
         if (eventName == null) {
             return this._events.map(event => event.listener);
         }
-        const eventTag = index.getAlchemyEventTag(eventName);
+        const eventTag = getAlchemyEventTag(eventName);
         return this._events
             .filter(event => event.tag === eventTag)
             .map(event => event.listener);
@@ -1081,7 +1075,7 @@ const MIN_RETRY_DELAY = 1000;
 const RETRY_BACKOFF_FACTOR = 2;
 const MAX_RETRY_DELAY = 30000;
 function withBackoffRetries(f, retryCount, shouldRetry = () => true) {
-    return index.__awaiter(this, void 0, void 0, function* () {
+    return __awaiter(this, void 0, void 0, function* () {
         let nextWaitTime = 0;
         let i = 0;
         while (true) {
@@ -1115,10 +1109,10 @@ function withTimeout(promise, ms) {
     ]);
 }
 function getNewHeadsBlockNumber(event) {
-    return index.fromHex(event.number);
+    return fromHex(event.number);
 }
 function getLogsBlockNumber(event) {
-    return index.fromHex(event.blockNumber);
+    return fromHex(event.blockNumber);
 }
 function isResponse(message) {
     return (Array.isArray(message) ||
@@ -1151,5 +1145,5 @@ function addToPastEventsBuffer(pastEvents, event, getBlockNumber) {
     pastEvents.push(event);
 }
 
-exports.AlchemyWebSocketProvider = AlchemyWebSocketProvider;
-//# sourceMappingURL=alchemy-websocket-provider-86b76290.js.map
+export { AlchemyWebSocketProvider };
+//# sourceMappingURL=alchemy-websocket-provider-604558b9.js.map

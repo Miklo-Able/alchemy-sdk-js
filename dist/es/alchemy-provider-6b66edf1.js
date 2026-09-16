@@ -1,4 +1,4 @@
-import { _ as __awaiter, D as DEFAULT_ALCHEMY_API_KEY, C as CustomNetworks, a as DEFAULT_NETWORK, N as Network, g as getAlchemyHttpUrl, b as getAlchemyWsUrl, I as IS_BROWSER, V as VERSION, l as logWarn, d as deepCopy, E as EthersNetwork } from './index-5e38bb8c.js';
+import { _ as __awaiter, D as DEFAULT_ALCHEMY_API_KEY, C as CustomNetworks, a as DEFAULT_NETWORK, N as Network, g as getAlchemyHttpUrl, b as getAlchemyWsUrl, I as IS_BROWSER, V as VERSION, l as logWarn, d as deepCopy, E as EthersNetwork } from './index-bc99390d.js';
 import { getNetwork } from '@ethersproject/networks';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { fetchJson } from '@ethersproject/web';
@@ -366,4 +366,4 @@ function getResult(payload) {
 }
 
 export { AlchemyProvider };
-//# sourceMappingURL=alchemy-provider-cba0ff37.js.map
+//# sourceMappingURL=alchemy-provider-6b66edf1.js.map
